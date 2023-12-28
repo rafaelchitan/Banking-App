@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    {% extends "template.html" %}
+    {% block content %}
+
+<main>
+    <section class="hero">
+        <div class="container">
+            <h1>Welcome to Your Bank Name</h1>
+            <p>Your trusted partner for all your financial needs.</p>
+            <a href="#" class="btn">Get Started</a>
+        </div>
+    </section>
+
+    <section class="services">
+        <div class="container">
+            <h2>Featured Services</h2>
+            <div class="service">
+                <img src="icon1.png" alt="Service Icon">
+                <h3>Online Banking</h3>
+                <p>Manage your accounts anytime, anywhere with our secure online banking platform.</p>
+            </div>
+            <div class="service">
+                <img src="icon2.png" alt="Service Icon">
+                <h3>Mobile App</h3>
+                <p>Bank on the go with our mobile app. Access your accounts, transfer funds, and more.</p>
+            </div>
+            <div class="service">
+                <img src="icon3.png" alt="Service Icon">
+                <h3>24/7 Support</h3>
+                <p>Our dedicated support team is available 24/7 to assist you with any inquiries.</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container">
+        <p>&copy; 2023 Your Bank Name. All rights reserved.</p>
+        <p>Contact us at <a href="mailto:info@yourbank.com">info@yourbank.com</a></p>
+    </div>
+</footer>
+        {% endblock %}
+
+</body>
+</html>
