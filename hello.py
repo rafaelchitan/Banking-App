@@ -1,31 +1,30 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, jsonify, session
+from flask_pymongo import PyMongo
+import pymongo
+from user.models import User  # Import the User class
+from database import db  # Import the db object from the database module
 
 app = Flask(__name__)
+app.secret_key = b'\xcc^\x91\xea\x17-\xd0W\x03\xa7\xf8J0\xac8\xc5'
 
-@app.route('/')
-def home():
-    return render_template('home.html')
+user = User()  # Create an instance of the User class
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        return user.signup()  # Use the signup method of the User class
 
-@app.route('/buttons')
-def buttons():
-    return render_template('buttons.html')
+    return render_template('register.html')
 
-@app.route('/debitcards')
-def debitcards():
-    return render_template('debitcards.html')
-
-
-# Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error = None
     if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please try again.'
-        else:
-            return redirect(url_for('home'))
-    return render_template('login.html', error=error)
+        return user.login()  # Use the login method of the User class
+
+    return render_template('login.html')
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    return user.signout()  # Use the signout method of the User class
+
+app.run(debug=True, port=5000)
