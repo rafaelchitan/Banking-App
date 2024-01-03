@@ -75,6 +75,23 @@
                 </div>
             </li>
 
+            <!-- Nav Item - Cards Menu -->
+            <li class="nav-item active">
+                <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapseCards" aria-expanded="true"
+                    aria-controls="collapseCards">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Cards</span>
+                </a>
+                <div id="collapseCards" class="collapse show" aria-labelledby="headingCards"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Your cards</h6>
+                        <a class="collapse-item active" href="{{ url_for('debitcards') }}">Debit Cards</a>
+                        <a class="collapse-item active" href="{{ url_for('home') }}">Request new card</a>
+                    </div>
+                </div>
+            </li>
+
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"

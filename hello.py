@@ -14,6 +14,11 @@ def about():
 def buttons():
     return render_template('buttons.html')
 
+@app.route('/debitcards')
+def debitcards():
+    return render_template('debitcards.html')
+
+
 # Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
 def login():
