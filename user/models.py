@@ -9,6 +9,7 @@ class User:
     del user['password']
     session['logged_in'] = True
     session['user'] = user
+    session['username'] = user['email']
     return jsonify(user), 200
 
   def signup(self):

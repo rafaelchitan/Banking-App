@@ -19,12 +19,30 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        return user.login()  # Use the login method of the User class
-
+        user.login()  # Use the login method of the User class
+        return redirect(url_for('home'))
     return render_template('login.html')
 
 @app.route('/logout', methods=['GET'])
 def logout():
     return user.signout()  # Use the signout method of the User class
 
-app.run(debug=True, port=5000)
+@app.route('/', methods=['GET'])
+def home():
+    if 'username' in session:
+        return render_template('home.html', username=session['username'])
+    return redirect(url_for('login'))
+
+@app.route('/buttons', methods=['GET'])
+def buttons():
+    if 'username' in session:
+        return render_template('buttons.html', username=session['username'])
+    return redirect(url_for('login'))
+
+@app.route('/debitcards', methods=['GET'])
+def debitcards():
+    if 'username' in session:
+        return render_template('debitcards.html', username=session['username'])
+    return redirect(url_for('login'))
+
+app.run(debug=False, port=5000)
