@@ -2,14 +2,46 @@ from flask import Flask, jsonify, request, session, redirect
 from passlib.hash import pbkdf2_sha256
 from database import db
 import uuid
+from pymongo import MongoClient
 
 class User:
+  def __init__(self, _id=None):
+    self._id = _id
+    self.accounts = []
+    self.client = MongoClient('mongodb://localhost:27017/')
+    self.db = self.client['bank']
+    
+  @classmethod
+  def from_dict(cls, data):
+      user = cls(data['_id'])
+      user.accounts = data.get('accounts', [])
+      return user
+
+  def add_account(self, first_name, last_name, iban):
+    account = {
+        'first_name': first_name,
+        'last_name': last_name,
+        'iban': iban
+    }
+    self.accounts.append(account)
+    self.save_to_db()
+    
+  def save_to_db(self):
+    self.db.users.update_one({'_id': self._id}, {'$set': {'accounts': self.accounts}}, upsert=True)
+    
+  @classmethod
+  def load_from_db(cls, user_id):
+      client = MongoClient('mongodb://localhost:27017/')
+      db = client['bank']
+      user_data = db.users.find_one({'_id': user_id})
+      return cls.from_dict(user_data)    
 
   def start_session(self, user):
     del user['password']
     session['logged_in'] = True
     session['user'] = user
     session['username'] = user['email']
+    session['user_id'] = user['_id']
     return jsonify(user), 200
 
   def signup(self):

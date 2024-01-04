@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
 <body id="page-top">
     {% extends "template.html" %}
     {% block content %}
 
+    <button id="new-card" class="btn btn-primary">New Card</button>
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
@@ -54,6 +59,30 @@
     </div>
 
     {% endblock %}
+
+    <script>
+        document.getElementById('new-card').addEventListener('click', function () {
+            var iban = document.getElementById('iban-input').value;
+            fetch('/request_card', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    iban: iban
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response
+                    console.log(data);
+                })
+                .catch(error => {
+                    // Handle the error
+                    console.error('Error:', error);
+                });
+        });
+    </script>
 </body>
 
 </html>

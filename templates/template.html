@@ -2,6 +2,10 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,7 +19,8 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
-    <link  rel="stylesheet" type="text/css" href="{{ url_for('static',    filename='vendor/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" type="text/css"
+        href="{{ url_for('static',    filename='vendor/fontawesome-free/css/all.min.css') }}">
 
     <!-- Custom styles for this template-->
     <link rel="stylesheet" href="{{ url_for('static',    filename='css/template.css') }}">
@@ -87,7 +92,10 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Your cards</h6>
                         <a class="collapse-item active" href="{{ url_for('debitcards') }}">Debit Cards</a>
-                        <a class="collapse-item active" href="{{ url_for('home') }}">Request new card</a>
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#newAccountModal">
+                            Request New Account
+                        </button>
                     </div>
                 </div>
             </li>
@@ -287,8 +295,7 @@
                                 </h6>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="static/img//undraw_profile_1.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="static/img//undraw_profile_1.svg" alt="...">
                                         <div class="status-indicator bg-success"></div>
                                     </div>
                                     <div class="font-weight-bold">
@@ -299,8 +306,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="static/img//undraw_profile_2.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="static/img//undraw_profile_2.svg" alt="...">
                                         <div class="status-indicator"></div>
                                     </div>
                                     <div>
@@ -311,8 +317,7 @@
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center" href="#">
                                     <div class="dropdown-list-image mr-3">
-                                        <img class="rounded-circle" src="static/img//undraw_profile_3.svg"
-                                            alt="...">
+                                        <img class="rounded-circle" src="static/img//undraw_profile_3.svg" alt="...">
                                         <div class="status-indicator bg-warning"></div>
                                     </div>
                                     <div>
@@ -345,13 +350,12 @@
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                                     {% if session['username'] %}
-                                        {{ session['username'] }}
+                                    {{ session['username'] }}
                                     {% else %}
-                                        User
+                                    User
                                     {% endif %}
                                 </span>
-                                <img class="img-profile rounded-circle"
-                                    src="static/img//undraw_profile.svg">
+                                <img class="img-profile rounded-circle" src="static/img//undraw_profile.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -384,19 +388,19 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    {% block content %}    
+                    {% block content %}
                     {% endblock %}
 
-                    </div>
-
                 </div>
-                <!-- /.container-fluid -->
 
             </div>
-            <!-- End of Main Content -->
+            <!-- /.container-fluid -->
 
         </div>
-        <!-- End of Content Wrapper -->
+        <!-- End of Main Content -->
+
+    </div>
+    <!-- End of Content Wrapper -->
 
     </div>
     <!-- End of Page Wrapper -->
@@ -425,6 +429,69 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="newAccountModal" tabindex="-1" role="dialog" aria-labelledby="newAccountModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newAccountModalLabel">Request New Account</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form name="newAccountForm" id="newAccountForm">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" class="form-control" id="firstName" placeholder="Enter first name">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" class="form-control" id="lastName" placeholder="Enter last name">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('newAccountForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var firstName = document.getElementById('firstName').value;
+            var lastName = document.getElementById('lastName').value;
+
+            console.log('Submitting form with first name:', firstName, 'and last name:', lastName);
+
+            fetch('/request_account', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    first_name: firstName,
+                    last_name: lastName
+                })
+            }).then(function (response) {
+                if (response.ok) {
+                    // If the account was created successfully, hide the modal
+                    $('#myModal').modal('hide');
+                } else {
+                    console.error('Failed to create account:', response.statusText);
+                }
+            }).catch(function (error) {
+                console.error('Failed to submit form:', error);
+            });
+        });
+    </script>
 
     <script src="{{ url_for('static',    filename='vendor/jquery/jquery.min.js')}}"></script>
     <script src="{{ url_for('static',    filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
