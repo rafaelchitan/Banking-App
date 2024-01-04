@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session
 from flask_pymongo import PyMongo
 import pymongo 
-from user.models import User
+from user.models import User, Card
 from database import db
 import random
 
@@ -109,24 +109,37 @@ def generate_card_number():
   card_number.append(check_digit)
   return ''.join(map(str, card_number)) 
   
+
 @app.route('/request_card', methods=['POST'])
 def request_card():
-    iban = request.json['iban']
-   # user = current_user
-    if user.iban == iban:
-        # Handle the form submission
-        iban = request.form.get('iban')
-        card_number = generate_card_number()
-        print(card_number + "AICI")
+    data = request.get_json()
+    firstName = data['firstName']
+    lastName = data['lastName']
+    iban = data['iban']
 
-        # Add the new card to the account
-        user.add_card_to_account(iban, card_number)
-        
-        for account in user.accounts:
-           print(account.cards + "AICI")
+    # Get the user_id from the session
+    user_id = session.get('user_id')
+
+    # Fetch the user from the database
+    user = db.users.find_one({"_id": user_id})
+
+    # Check if the user's account's IBAN matches the provided IBAN
+    account = [account for account in user['accounts'] if account['iban'] == iban]
+    if account:
+        # Generate a new card number
+        card_number = generate_card_number()
+
+        # Create a new card
+        card = Card(firstName=firstName, lastName=lastName, number=card_number, iban=iban, user_id=user_id)
+
+        # Add the card to the user's account
+        db.users.update_one(
+            {"_id": user_id, "accounts.iban": iban},
+            {"$push": {"accounts.$.cards": card.to_dict()}}
+        )
 
         return jsonify({'message': 'Card created successfully'}), 200
 
-    return jsonify({'message': 'Invalid iban'}), 400
+    return jsonify({'message': 'Invalid IBAN'}), 400
 
 app.run(debug=False, port=5000)

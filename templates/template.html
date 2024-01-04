@@ -464,33 +464,33 @@
 
     <script>
         document.getElementById('newAccountForm').addEventListener('submit', function (event) {
-            event.preventDefault();
+    event.preventDefault();
 
-            var firstName = document.getElementById('firstName').value;
-            var lastName = document.getElementById('lastName').value;
+    var firstName = document.getElementById('firstName').value;
+    var lastName = document.getElementById('lastName').value;
 
-            console.log('Submitting form with first name:', firstName, 'and last name:', lastName);
+    console.log('Submitting form with first name:', firstName, 'and last name:', lastName);
 
-            fetch('/request_account', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    first_name: firstName,
-                    last_name: lastName
-                })
-            }).then(function (response) {
-                if (response.ok) {
-                    // If the account was created successfully, hide the modal
-                    $('#myModal').modal('hide');
-                } else {
-                    console.error('Failed to create account:', response.statusText);
-                }
-            }).catch(function (error) {
-                console.error('Failed to submit form:', error);
-            });
-        });
+    fetch('/request_account', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            first_name: firstName,
+            last_name: lastName
+        })
+    }).then(function(response) {
+        if (response.ok) {
+            // If the account was created successfully, hide the modal
+            $('#myModal').modal('hide');
+        } else {
+            console.error('Failed to create account:', response.statusText);
+        }
+    }).catch(function(error) {
+        console.error('Failed to submit form:', error);
+    });
+});
     </script>
 
     <script src="{{ url_for('static',    filename='vendor/jquery/jquery.min.js')}}"></script>

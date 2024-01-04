@@ -82,3 +82,21 @@ class User:
       return self.start_session(user)
     
     return jsonify({ "error": "Invalid login credentials" }), 401
+  
+class Card:
+  def __init__(self, firstName, lastName, number, iban, user_id):
+      self.firstName = firstName
+      self.lastName = lastName
+      self.number = number
+      self.iban = iban
+      self.user_id = user_id
+
+  def to_dict(self):
+      return {
+          "_id": uuid.uuid4().hex,
+          "firstName": self.firstName,
+          "lastName": self.lastName,
+          "number": self.number,
+          "iban": self.iban,
+          "user_id": self.user_id
+      } 
