@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
 <body id="page-top">
-    {% extends "template.html" %}
-    {% block content %}
+
 
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -53,7 +56,83 @@
 
     </div>
 
-    {% endblock %}
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newCardModal">
+        New Card
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="newCardModal" tabindex="-1" role="dialog" aria-labelledby="newCardModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newCardModalLabel">New Card</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="new-card-form">
+                        <div class="form-group">
+                            <label for="first-name-input">First Name:</label>
+                            <input type="text" id="first-name-input" name="first-name-input" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="last-name-input">Last Name:</label>
+                            <input type="text" id="last-name-input" name="last-name-input" class="form-control">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="iban-input">IBAN:</label>
+                            <input type="text" id="iban-input" name="iban-input" class="form-control">
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('new-card-form').addEventListener('submit', function (event) {
+            // Prevent the form from being submitted normally
+            event.preventDefault();
+
+            // Get the values of the input fields
+            var firstName = document.getElementById('first-name-input').value;
+            var lastName = document.getElementById('last-name-input').value;
+            var iban = document.getElementById('iban-input').value;
+
+            // Send a POST request with the form data
+            fetch('/request_card', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                    iban: iban
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response
+                    console.log(data);
+                })
+                .catch(error => {
+                    // Handle the error
+                    console.error('Error:', error);
+                });
+        });
+    </script>
 </body>
 
 </html>
