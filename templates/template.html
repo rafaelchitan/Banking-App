@@ -3,10 +3,8 @@
 
 <head>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
+    
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -90,12 +88,9 @@
                 <div id="collapseCards" class="collapse show" aria-labelledby="headingCards"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Your cards</h6>
-                        <a class="collapse-item active" href="{{ url_for('debitcards') }}">Debit Cards</a>
-                        <button type="button" class="btn btn-primary" data-toggle="modal"
-                            data-target="#newAccountModal">
-                            Request New Account
-                        </button>
+                        <h6 class="collapse-header">Your products</h6>
+                        <a class="collapse-item active" href="{{ url_for('accounts') }}">Accounts</a>
+                        <a class="collapse-item active" href="{{ url_for('debitcards') }}">Cards</a>
                     </div>
                 </div>
             </li>
@@ -430,68 +425,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="newAccountModal" tabindex="-1" role="dialog" aria-labelledby="newAccountModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="newAccountModalLabel">Request New Account</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form name="newAccountForm" id="newAccountForm">
-                        <div class="form-group">
-                            <label for="firstName">First Name</label>
-                            <input type="text" class="form-control" id="firstName" placeholder="Enter first name">
-                        </div>
-                        <div class="form-group">
-                            <label for="lastName">Last Name</label>
-                            <input type="text" class="form-control" id="lastName" placeholder="Enter last name">
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('newAccountForm').addEventListener('submit', function (event) {
-    event.preventDefault();
-
-    var firstName = document.getElementById('firstName').value;
-    var lastName = document.getElementById('lastName').value;
-
-    console.log('Submitting form with first name:', firstName, 'and last name:', lastName);
-
-    fetch('/request_account', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            first_name: firstName,
-            last_name: lastName
-        })
-    }).then(function(response) {
-        if (response.ok) {
-            // If the account was created successfully, hide the modal
-            $('#myModal').modal('hide');
-        } else {
-            console.error('Failed to create account:', response.statusText);
-        }
-    }).catch(function(error) {
-        console.error('Failed to submit form:', error);
-    });
-});
-    </script>
 
     <script src="{{ url_for('static',    filename='vendor/jquery/jquery.min.js')}}"></script>
     <script src="{{ url_for('static',    filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>

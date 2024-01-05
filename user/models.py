@@ -17,11 +17,12 @@ class User:
       user.accounts = data.get('accounts', [])
       return user
 
-  def add_account(self, first_name, last_name, iban):
+  def add_account(self, alias, currency, iban):
     account = {
-        'first_name': first_name,
-        'last_name': last_name,
-        'iban': iban
+        'alias': alias,
+        'currency': currency,
+        'iban': iban,
+        'balance': 0.0,
     }
     self.accounts.append(account)
     self.save_to_db()
@@ -83,6 +84,10 @@ class User:
     
     return jsonify({ "error": "Invalid login credentials" }), 401
   
+  def add_money(self, account, amount):
+    account['balance'] += amount
+    self.save_to_db()
+  
 class Card:
   def __init__(self, firstName, lastName, number, iban, user_id):
       self.firstName = firstName
@@ -100,3 +105,4 @@ class Card:
           "iban": self.iban,
           "user_id": self.user_id
       } 
+  

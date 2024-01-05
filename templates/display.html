@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Data Display</title>
+</head>
+<body>
+    <h1>User Data</h1>
+    <p>Welcome, {{ username }}!</p>
+    <h2>Accounts</h2>
+    <ul>
+        {% for account in accounts %}
+            <li>Account Name: {{ account.first_name }} {{ account.last_name }} - IBAN: {{ account.iban }}</li>
+            <ul>
+                {% for card in account.cards %}
+                    <li>Card Number: {{ card.number }}</li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    </ul>
+</body>
+</html>

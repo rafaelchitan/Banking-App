@@ -11,6 +11,20 @@ app.secret_key = b'\xcc^\x91\xea\x17-\xd0W\x03\xa7\xf8J0\xac8\xc5'
 
 user = User()  # Create an instance of the User class
 
+@app.route('/accounts', methods=['GET'])
+def accounts():
+    if 'username' in session:
+        user_id = session.get('user_id')
+        user_data = db.users.find_one({"_id": user_id})
+
+        if user_data:
+            accounts = user_data.get('accounts', [])
+            return render_template('accounts.html', username=session['username'], accounts=accounts)
+        else:
+            return render_template('accounts.html', username=session['username'], accounts=[])
+
+    return redirect(url_for('login'))
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -59,7 +73,15 @@ def buttons():
 @app.route('/debitcards', methods=['GET'])
 def debitcards():
     if 'username' in session:
-        return render_template('debitcards.html', username=session['username'])
+        user_id = session.get('user_id')
+        user_data = db.users.find_one({"_id": user_id})
+
+        if user_data:
+            accounts = user_data.get('accounts', [])
+            return render_template('debitcards.html', username=session['username'], accounts=accounts)
+        else:
+            return render_template('debitcards.html', username=session['username'], accounts=[])
+
     return redirect(url_for('login'))
 
 def generate_iban():
@@ -71,10 +93,10 @@ def generate_iban():
 def request_account():
     # Handle the form submission
     data = request.get_json()
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
+    alias = data.get('alias')
+    currency = data.get('currency')
     
-    if not first_name or not last_name:
+    if not alias or not currency:
         return jsonify({'message': 'Invalid request'}), 400
 
     iban = generate_iban()
@@ -90,7 +112,7 @@ def request_account():
     user = get_user_from_database(user_id)
 
     # Add the new account to the user
-    user.add_account(first_name, last_name, iban)
+    user.add_account(alias, currency, iban)
     print(user.accounts)
 
     return jsonify({'message': 'Account created successfully'}), 200
@@ -141,5 +163,20 @@ def request_card():
         return jsonify({'message': 'Card created successfully'}), 200
 
     return jsonify({'message': 'Invalid IBAN'}), 400
+
+@app.route('/display', methods=['GET'])
+def display():
+    if 'username' in session:
+        user_id = session.get('user_id')
+        user_data = db.users.find_one({"_id": user_id})
+
+        if user_data:
+            accounts = user_data.get('accounts', [])
+            return render_template('display.html', username=session['username'], accounts=accounts)
+        else:
+            return render_template('display.html', username=session['username'], accounts=[])
+
+    return redirect(url_for('login'))
+
 
 app.run(debug=False, port=5000)

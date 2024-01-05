@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body id="page-top">
+    {% extends 'template.html' %}
+    {% block content %}
+
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row">
+
+        {% for account in accounts %}
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body d-flex flex-column">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                {{ account.alias }}
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ account.currency }} {{ account.balance }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn-circle mt-auto" id="addMoney" data-toggle="modal" data-target="#addMoneyModal" data-account="{{ account }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="70" height="70" fill="green" class="bi bi-plus" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+            
+        {% endfor %}
+
+    </div>
+
+    <button type="button" class="btn btn-primary" data-toggle="modal"
+                            data-target="#newAccountModal">
+                            Request New Account
+                        </button>
+
+                    <div class="modal fade" id="newAccountModal" tabindex="-1" role="dialog" aria-labelledby="newAccountModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="newAccountModalLabel">Request New Account</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form name="newAccountForm" id="newAccountForm">
+                                        <div class="form-group">
+                                            <label for="alias">Alias</label>
+                                            <input type="text" class="form-control" id="alias" placeholder="Enter a alias for your new bank account">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="currenct">Currency</label>
+                                            <select class="form-control" id="currency">
+                                                <option>EUR</option>
+                                                <option>USD</option>
+                                                <option>GBP</option>
+                                                <option>RON</option>
+                                            </select>
+                                        </div>
+                
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Create account</button>
+                                        </div>
+                                    </form>
+                                </div>
+                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="addMoneyModal" tabindex="-1" role="dialog" aria-labelledby="addMoneyModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addMoneyModalLabel">Add Money to account</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form name="newAccountForm" id="newAccountForm">
+                                        <div class="form-group">
+                                            <label for="alias">Account Alias</label>
+                                            <input type="text" class="form-control" id="alias" disabled placeholder="RO">
+                                        </div>
+                
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Create account</button>
+                                        </div>
+                                    </form>
+                                </div>
+                
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.getElementById('newAccountForm').addEventListener('submit', function (event) {
+                    event.preventDefault();
+                
+                    var alias = document.getElementById('alias').value;
+                    var currency = document.getElementById('currency').value;
+                
+                    console.log('Submitting form with alias:', alias, 'and currency:', currency);
+                
+                    fetch('/request_account', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            alias: alias,
+                            currency: currency
+                        })
+                    }).then(function(response) {
+                        if (response.ok) {
+                            // If the account was created successfully, hide the modal
+                            $('#newAccountModal').modal('hide');
+                        } else {
+                            console.error('Failed to create account:', response.statusText);
+                        }
+                    }).catch(function(error) {
+                        console.error('Failed to submit form:', error);
+                    });
+                });
+
+
+
+                    </script>
+    
+    {% endblock %}
+</body>
+
+</html>
