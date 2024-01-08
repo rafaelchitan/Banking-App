@@ -7,6 +7,22 @@
     <!-- <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Mr+Dafoe&amp;family=Noto+Sans+KR&amp;family=Overpass+Mono:wght@400;600&amp;display=swap'><link rel="stylesheet" href="../static/css/card.css"> -->
 </head>
 
+<style>
+    .cards-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        /* This will add some space around the cards */
+    }
+
+    .card {
+        flex: 0 0 calc(33.33% - 20px);
+        /* This will make the cards take up about a third of the container's width, minus some space for margins */
+        margin: 10px;
+        /* This adds some space around each card */
+    }
+</style>
+
 <body id="page-top">
     {% extends 'template.html' %}
     {% block content %}
@@ -17,41 +33,41 @@
 
         <div class="cards-container">
             {% for account in accounts %}
-                {% for card in account.cards %}
-                    <div class="card">
-                        <div class="card-inner">
-                            <div class="card-front">
-                                <div class="card-bg"></div>
-                                <div class="card-glow"></div>
-                                <svg width="72" height="24" viewBox="0 0 72 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="logo">
-                              
-                                    <circle cx="12" cy="12" r="10" fill="#ff5f00" />
-                                    <circle cx="36" cy="12" r="10" fill="#eb001b" />
-                                    <circle cx="60" cy="12" r="10" fill="#f79e1b" />
-                                </svg>
-                                <div class="card-contactless">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
-                                        <path fill="none" stroke="#f9f9f9" stroke-width="6" stroke-linecap="round"
-                                            d="m35,3a50,50 0 0,1 0,50M24,8.5a39,39 0 0,1 0,39M13.5,13.55a28.2,28.5
+            {% for card in account.cards %}
+            <div class="card">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="card-bg"></div>
+                        <div class="card-glow"></div>
+                        <svg width="72" height="24" viewBox="0 0 72 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="logo">
+
+                            <circle cx="12" cy="12" r="10" fill="#ff5f00" />
+                            <circle cx="36" cy="12" r="10" fill="#eb001b" />
+                            <circle cx="60" cy="12" r="10" fill="#f79e1b" />
+                        </svg>
+                        <div class="card-contactless">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
+                                <path fill="none" stroke="#f9f9f9" stroke-width="6" stroke-linecap="round" d="m35,3a50,50 0 0,1 0,50M24,8.5a39,39 0 0,1 0,39M13.5,13.55a28.2,28.5
                                             0 0,1 0,28.5M3,19a18,17 0 0,1 0,18" />
-                                    </svg>
-                                </div>
-                                <div class="card-chip"></div>
-                                <div class="card-holder">{{ card.firstName }} {{ card.lastName }}</div>
-                                <div class="card-number">{{ card.number }}</div>
-                                <div class="card-valid">12/24</div>
-                            </div>
-                        <div class="card-back">
-                            <div class="card-signature">{{ card.firstName }} {{ card.lastName }}</div>
-                            <div class="card-seccode">123</div>
+                            </svg>
                         </div>
-                        </div>
+                        <div class="card-chip"></div>
+                        <div class="card-holder">{{ card.firstName }} {{ card.lastName }}</div>
+                        <div class="card-number">{{ card.number }}</div>
+                        <div class="card-valid">12/24</div>
                     </div>
-                {% endfor %}
+                    <div class="card-back">
+                        <div class="card-signature">{{ card.firstName }} {{ card.lastName }}</div>
+                        <div class="card-seccode">123</div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
             {% endfor %}
         </div>
     </div>
-    
+
 
 
     <!-- Button trigger modal -->
@@ -61,53 +77,55 @@
 
     <!-- Modal -->
     <div class="modal fade" id="newCardModal" tabindex="-1" role="dialog" aria-labelledby="newCardModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="newCardModalLabel">New Card</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="new-card-form">
-                    <div class="form-group">
-                        <label for="first-name-input">First Name:</label>
-                        <input type="text" id="first-name-input" name="first-name-input" class="form-control">
-                    </div>
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newCardModalLabel">New Card</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="new-card-form">
+                        <div class="form-group">
+                            <label for="first-name-input">First Name:</label>
+                            <input type="text" id="first-name-input" name="first-name-input" class="form-control">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="last-name-input">Last Name:</label>
-                        <input type="text" id="last-name-input" name="last-name-input" class="form-control">
-                    </div>
+                        <div class="form-group">
+                            <label for="last-name-input">Last Name:</label>
+                            <input type="text" id="last-name-input" name="last-name-input" class="form-control">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="iban-input">IBAN:</label>
-                        <select id="iban-input" name="iban-input" class="form-control">
-                            {% if accounts|length == 0 %}
+                        <div class="form-group">
+                            <label for="iban-input">IBAN:</label>
+                            <select id="iban-input" name="iban-input" class="form-control">
+                                {% if accounts|length == 0 %}
                                 <option value="" disabled selected>A new ac</option>
-                            {% else %}
+                                {% else %}
                                 <option value="" disabled selected>Select an account</option>
-                            {% endif %}
-                            {% for account in accounts %}
+                                {% endif %}
+                                {% for account in accounts %}
                                 <option value="{{ account.iban }}">{{ account.iban }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+                                {% endfor %}
+                            </select>
+                        </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
     <script>
+
+
         document.getElementById('new-card-form').addEventListener('submit', function (event) {
             // Prevent the form from being submitted normally
             event.preventDefault();
@@ -133,6 +151,18 @@
                 .then(data => {
                     // Handle the response
                     console.log(data);
+
+                    // Close the modal
+                    $('#newCardModal').modal('hide'); // Replace 'myModal' with the id of your modal
+
+                    $(document).ready(function () {
+
+                        setInterval(function () {
+                            $("#cards-container").load(window.location.href + " #cards-container");
+                        }, 1000);
+
+                    });
+                    
                 })
                 .catch(error => {
                     // Handle the error
@@ -140,7 +170,7 @@
                 });
         });
     </script>
-    
+
     {% endblock %}
 </body>
 
