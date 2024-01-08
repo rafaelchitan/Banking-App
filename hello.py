@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session
 from flask_pymongo import PyMongo
 import pymongo 
-from user.models import User, Card
+from user.models import User, Card, Transaction
 from database import db
 import random
 
@@ -177,6 +177,28 @@ def display():
             return render_template('display.html', username=session['username'], accounts=[])
 
     return redirect(url_for('login'))
+
+
+@app.route('/transfer_money', methods=['POST'])
+def transfer_money():
+    # Handle the form submission
+    data = request.get_json()
+    senderIBAN = data.get('senderIBAN')
+    receiverIBAN = data.get('receiverIBAN')
+    amount = data.get('amount')
+    
+    if not senderIBAN or not receiverIBAN or not amount:
+        return jsonify({'message': 'Invalid request'}), 400
+
+    # Get the currently logged in user
+    user_id = session.get('user_id')
+    if user_id is None:
+        return jsonify({'message': 'Not logged in'}), 401
+    
+    transaction = Transaction(senderIBAN, receiverIBAN, amount)
+    transaction.save_to_db()
+
+    return jsonify({'message': 'Account created successfully'}), 200
 
 
 app.run(debug=False, port=5000)

@@ -106,3 +106,40 @@ class Card:
           "user_id": self.user_id
       } 
   
+class Transaction:
+  def __init__(self, sender, receiver, amount):
+    self.sender = sender
+    self.receiver = receiver
+    self.amount = amount
+    self.client = MongoClient('mongodb://localhost:27017/')
+    self.db = self.client['bank']
+
+  def to_dict(self):
+      return {
+          "_id": uuid.uuid4().hex,
+          "sender": self.sender,
+          "receiver": self.receiver,
+          "amount": self.amount
+      }
+  
+  def save_to_db(self):
+    # get the user id that has the sender iban
+    senderUser = db.users.find_one({"accounts.iban": self.sender})
+    receiverUser = db.users.find_one({"accounts.iban": self.receiver})
+    self.db.transactions.insert_one(self.to_dict())
+
+    senderAmount = [account['balance'] for account in senderUser['accounts'] if account['iban'] == self.sender]
+    receiverAmount = [account['balance'] for account in receiverUser['accounts'] if account['iban'] == self.receiver]
+    if senderAmount[0] < float(self.amount):
+      return jsonify({'message': 'Insufficient funds'}), 400
+    
+    senderAmount[0] = float(senderAmount[0]) - float(self.amount)
+    receiverAmount[0] = float(receiverAmount[0]) + float(self.amount)
+
+    self.db.users.update_one({'_id': senderUser['_id'], 'accounts.iban': self.sender}, {'$set': {'accounts.$.balance': senderAmount[0]}})
+    self.db.users.update_one({'_id': receiverUser['_id'], 'accounts.iban': self.receiver}, {'$set': {'accounts.$.balance': receiverAmount[0]}})
+
+    self.db.users.update_one({'_id': senderUser['_id']}, {'$push': {'transactions': self.to_dict()}})
+    self.db.users.update_one({'_id': receiverUser['_id']}, {'$push': {'transactions': self.to_dict()}})
+
+  
