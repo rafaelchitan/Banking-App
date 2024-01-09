@@ -113,19 +113,23 @@ class Card:
       } 
   
 class Transaction:
-  def __init__(self, sender, receiver, amount):
+  def __init__(self, sender, receiver, amount, description, currency):
     self.sender = sender
     self.receiver = receiver
     self.amount = amount
     self.client = MongoClient('mongodb://localhost:27017/')
     self.db = self.client['bank']
+    self.description = description
+    self.currency = currency
 
   def to_dict(self):
       return {
           "_id": uuid.uuid4().hex,
           "sender": self.sender,
           "receiver": self.receiver,
-          "amount": self.amount
+          "amount": self.amount,
+          "description": self.description,
+          "currency": self.currency
       }
   
   def save_to_db(self):
@@ -142,10 +146,11 @@ class Transaction:
     senderAmount[0] = float(senderAmount[0]) - float(self.amount)
     receiverAmount[0] = float(receiverAmount[0]) + float(self.amount)
 
-    self.db.users.update_one({'_id': senderUser['_id'], 'accounts.iban': self.sender}, {'$set': {'accounts.$.balance': senderAmount[0]}})
+    if senderUser['_id'] != receiverUser['_id']:
+      self.db.users.update_one({'_id': senderUser['_id']}, {'$push': {'transactions': self.to_dict()}})
+  
     self.db.users.update_one({'_id': receiverUser['_id'], 'accounts.iban': self.receiver}, {'$set': {'accounts.$.balance': receiverAmount[0]}})
-
-    self.db.users.update_one({'_id': senderUser['_id']}, {'$push': {'transactions': self.to_dict()}})
+    self.db.users.update_one({'_id': senderUser['_id'], 'accounts.iban': self.sender}, {'$set': {'accounts.$.balance': senderAmount[0]}})
     self.db.users.update_one({'_id': receiverUser['_id']}, {'$push': {'transactions': self.to_dict()}})
 
 class Loan:

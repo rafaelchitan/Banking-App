@@ -196,6 +196,7 @@ def transfer_money():
     senderIBAN = data.get('senderIBAN')
     receiverIBAN = data.get('receiverIBAN')
     amount = data.get('amount')
+    description = data.get('description')
     
     if not senderIBAN or not receiverIBAN or not amount:
         return jsonify({'message': 'Invalid request'}), 400
@@ -205,7 +206,9 @@ def transfer_money():
     if user_id is None:
         return jsonify({'message': 'Not logged in'}), 401
     
-    transaction = Transaction(senderIBAN, receiverIBAN, amount)
+    currency = db.users.find_one({"_id": user_id, "accounts.iban": senderIBAN}, {"accounts.$": 1})['accounts'][0]['currency']
+    print(currency)
+    transaction = Transaction(senderIBAN, receiverIBAN, amount, description, currency)
     transaction.save_to_db()
 
     return jsonify({'message': 'Account created successfully'}), 200
@@ -281,11 +284,8 @@ def history():
         user_id = session.get('user_id')
         user_data = db.users.find_one({"_id": user_id})
 
-        transactions = db.users.find_one({"_id": user_id})
-        print(transactions)
-
         if user_data:
-            accounts = user_data.get('accounts', [])
+            transactions = user_data.get('transactions', [])
             return render_template('history.html', username=session['username'], transactions=transactions)
         else:
             return render_template('history.html', username=session['username'], transactions=[])
@@ -333,6 +333,7 @@ def loan_approval():
         return jsonify({'error': 'User not found'}), 404
     
     amount = loan.get('amount')
+    amount = float(amount)
     status = data.get('approval')
     if not status:
         return jsonify({'error': 'Missing status'}), 400

@@ -14,16 +14,15 @@
         <div class="col-12 mb-3 mb-lg-5">
             <div class="position-relative card table-nowrap table-card">
                 <div class="card-header align-items-center">
-                    <h5 class="mb-0">Latest Transactions</h5>
-                    <p class="mb-0 small text-muted">1 Pending</p>
+                    <h5 class="mb-0">Transaction history</h5>
                 </div>
                 <div class="table-responsive">
                     <table class="table mb-0">
                         <thead class="small text-uppercase bg-body text-muted">
                             <tr>
-                                <th>Transaction ID</th>
-                                <th>Date</th>
-                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Sender account</th>
+                                <th>Receiver account</th>
                                 <th>Amount</th>
                                 <th>Status</th>
                             </tr>
@@ -31,14 +30,14 @@
                         {% for transaction in transactions %}
                         <tr class="align-middle">
                             <td>
-                                {{ transaction._id }}
+                                {{ transaction.description }}
                             </td>
                             <td>{{ transaction.sender }}</td>
                             <td>{{ transaction.receiver }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <span><i class="fa fa-arrow-down" aria-hidden="true"></i></span>
-                                    <span>${{ transaction.amount }}</span>
+                                    <span><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
+                                    <span>{{ transaction.currency }} {{ transaction.amount }}</span>
                                 </div>
                             </td>
                             <td>
@@ -47,9 +46,6 @@
                         </tr>
                     {% endfor %}
                     </table>
-                </div>
-                <div class="card-footer text-end">
-                    <a href="#!" class="btn btn-gray">View All Transactions</a>
                 </div>
             </div>
         </div>

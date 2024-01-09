@@ -239,6 +239,16 @@
                 />
               </div>
 
+              <div class="form-group">
+                <label for="transferDescription">Amount</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="transferDescription"
+                  placeholder="Enter the description of the transfer"
+                />
+              </div>
+
               <div class="modal-footer">
                 <button
                   type="button"
@@ -418,6 +428,7 @@
           var senderIBAN = document.getElementById("senderIBAN").value;
           var receiverIBAN = document.getElementById("receiverIBAN").value;
           var amount = document.getElementById("amount").value;
+          var description = document.getElementById("transferDescription").value;
 
           Promise.all([
             fetch(`/get_currency?iban=${senderIBAN}`),
@@ -452,6 +463,7 @@
                   senderIBAN: senderIBAN,
                   receiverIBAN: receiverIBAN,
                   amount: amount,
+                  description: description
                 }),
               })
                 .then(function (response) {
