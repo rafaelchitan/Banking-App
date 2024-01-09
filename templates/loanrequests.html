@@ -1,4 +1,5 @@
-
+<!DOCTYPE html>
+<html lang="en">
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
@@ -89,7 +90,7 @@
                 <input
                   type="text"
                   class="form-control"
-                  id="aliasInput"
+                  id="alias"
                   placeholder="Enter a alias for your new bank account"
                 />
               </div>
@@ -329,13 +330,25 @@
           <div class="modal-body">
             <form name="loanForm" id="loanForm">
               <div class="form-group">
+                <label for="alias">Account Alias</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="alias"
+                  disabled
+                  placeholder="RO"
+                  id="user"
+                id/>
+              </div>
+
+              <div class="form-group">
                 <label for="amount">Amount</label>
                 <input
                   type="text"
                   class="form-control"
-                  
-                  placeholder="0"
-                  id="amountInput"
+                  disabled
+                  placeholder="EUR"
+                  id="amountInput"; 
                 />
               </div>
 
@@ -344,8 +357,10 @@
                 <input
                   type="text"
                   class="form-control"
+                  id="currency"
+                  disabled
                   placeholder="EUR"
-                  id="currencyInput"
+                  id="currencyInput"; 
                 />
               </div>
 
@@ -489,9 +504,9 @@
       document
         .getElementById("requestLoanSubmit")
         .addEventListener("click", function () {
-            event.preventDefault();
-
-            var currencyInput = document.getElementById("currencyInput").value;
+          var user = document.getElementById("user").value;
+          var amount = document.getElementById("loanAmount").value;
+            var currency = document.getElementById("currencyInput").value;
             var amountInput = document.getElementById("amountInput").value;
 
           fetch("/request_loan", {
@@ -500,16 +515,16 @@
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
+              user: user,
               amount: amountInput,
-              currency: currencyInput,
-              status: "pending"
+              currency: currency,
+              status: "pending",
             }),
           })
             .then(function (response) {
               if (response.ok) {
                 // If the loan was requested successfully, hide the modal
                 document.getElementById("loanModal").style.display = "none";
-                console.log("Loan requested successfully");
               } else {
                 console.error("Failed to request loan:", response.statusText);
               }

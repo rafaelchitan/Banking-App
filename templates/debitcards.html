@@ -32,39 +32,39 @@
         <h2>My Cards</h2>
 
         <div class="cards-container">
-            {% for account in accounts %}
-            {% for card in account.cards %}
-            <div class="card">
-                <div class="card-inner">
-                    <div class="card-front">
-                        <div class="card-bg"></div>
-                        <div class="card-glow"></div>
-                        <svg width="72" height="24" viewBox="0 0 72 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                            class="logo">
+                {% for account in accounts %}
+                {% for card in account.cards %}
+                <div class="card">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <div class="card-bg"></div>
+                            <div class="card-glow"></div>
+                            <svg width="72" height="24" viewBox="0 0 72 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                                class="logo">
 
-                            <circle cx="12" cy="12" r="10" fill="#ff5f00" />
-                            <circle cx="36" cy="12" r="10" fill="#eb001b" />
-                            <circle cx="60" cy="12" r="10" fill="#f79e1b" />
-                        </svg>
-                        <div class="card-contactless">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
-                                <path fill="none" stroke="#f9f9f9" stroke-width="6" stroke-linecap="round" d="m35,3a50,50 0 0,1 0,50M24,8.5a39,39 0 0,1 0,39M13.5,13.55a28.2,28.5
-                                            0 0,1 0,28.5M3,19a18,17 0 0,1 0,18" />
+                                <circle cx="12" cy="12" r="10" fill="#ff5f00" />
+                                <circle cx="36" cy="12" r="10" fill="#eb001b" />
+                                <circle cx="60" cy="12" r="10" fill="#f79e1b" />
                             </svg>
+                            <div class="card-contactless">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="46" height="56">
+                                    <path fill="none" stroke="#f9f9f9" stroke-width="6" stroke-linecap="round" d="m35,3a50,50 0 0,1 0,50M24,8.5a39,39 0 0,1 0,39M13.5,13.55a28.2,28.5
+                                                0 0,1 0,28.5M3,19a18,17 0 0,1 0,18" />
+                                </svg>
+                            </div>
+                            <div class="card-chip"></div>
+                            <div class="card-holder">{{ card.firstName }} {{ card.lastName }}</div>
+                            <div class="card-number">{{ card.number }}</div>
+                            <div class="card-valid">{{ card.expiry_date }}</div>
                         </div>
-                        <div class="card-chip"></div>
-                        <div class="card-holder">{{ card.firstName }} {{ card.lastName }}</div>
-                        <div class="card-number">{{ card.number }}</div>
-                        <div class="card-valid">12/24</div>
-                    </div>
-                    <div class="card-back">
-                        <div class="card-signature">{{ card.firstName }} {{ card.lastName }}</div>
-                        <div class="card-seccode">123</div>
+                        <div class="card-back">
+                            <div class="card-signature">{{ card.firstName }} {{ card.lastName }}</div>
+                            <div class="card-seccode">{{ card.cvv }}</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
-            {% endfor %}
+                {% endfor %}
+                {% endfor %}
         </div>
     </div>
 

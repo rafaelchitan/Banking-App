@@ -38,3 +38,17 @@ function animation(id) {
 
   }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.documentElement.style.setProperty('--random-color-1', getRandomColor());
+  document.documentElement.style.setProperty('--random-color-2', getRandomColor());
+});
+
+function getRandomColor() {
+  var colors = ['#3498db', '#2ecc71', '#e74c3c', '#f39c12', '#9b59b6', '#e67e22', '#1abc9c', '#d35400'];
+  return colors[random(0, colors.length - 1)];
+}
+
+function random(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}

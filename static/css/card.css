@@ -1,3 +1,8 @@
+:root {
+  --random-color-1: #3498db;
+  --random-color-2: #2ecc71;
+}
+
 .card {
   width: 320px;
   height: 200px;
@@ -24,7 +29,10 @@
   border-radius: 10px;
   overflow: hidden;
   backface-visibility: hidden;
-  background: linear-gradient(321.03deg, #01adef 0%, #0860bf 91.45%);
+  background-image: linear-gradient(to right top, 
+    var(--random-color-1),
+    var(--random-color-2)
+  );
 }
 .card-front {
   border-radius: 10px;
@@ -53,7 +61,10 @@
   top: 15%;
   width: 100%;
   height: 40px;
-  background-image: linear-gradient(to right top, #021318, #07191f, #0a1f26, #0b262e, #0c2c35, #0c2c35, #0c2c35, #0c2c35, #0b262e, #0a1f26, #07191f, #021318);
+  background-image: linear-gradient(to right top, 
+    rgb(random(0, 255), random(0, 255), random(0, 255)),
+    rgb(random(0, 255), random(0, 255), random(0, 255))
+  );
 }
 .card-bg {
   position: absolute;
@@ -175,14 +186,14 @@
   top: 120px;
   left: 15px;
   width: 70%;
-  height: 30px;
+  height: 15px;
   background: #eeecec;
   display: flex;
   justify-content: center;
   align-items: center;
   color: #021318;
   font-family: "Mr Dafoe", cursive;
-  font-size: 38px;
+  font-size: 15px;
   font-weight: 400;
 }
 .card-signature::before {
@@ -196,17 +207,17 @@
 }
 .card-seccode {
   position: absolute;
-  top: 125px;
-  left: 245px;
+  top: 120px;
+  left: 215px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 17px;
+  width: 35px;
+  height: 15px;
   color: #021318;
   background-color: #eeecec;
   text-align: center;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .logo {
@@ -227,6 +238,7 @@
   display: flex;
   overflow-x: auto;
   margin: 20px 0;
+  overflow: hidden;
 }
 
 .containerr {

@@ -1,9 +1,10 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify, session
 from flask_pymongo import PyMongo
 import pymongo 
-from user.models import User, Card, Transaction
+from user.models import User, Card, Transaction, Loan
 from database import db
 import random
+import datetime
 
 app = Flask(__name__)
 
@@ -89,6 +90,14 @@ def generate_iban():
     account_number = ''.join(random.choice('0123456789') for _ in range(10))
     return 'RO00' + bank_code + account_number
 
+def generate_cvv():
+    return ''.join(random.choice('0123456789') for _ in range(3))
+
+def generate_expiry_date():
+    month = random.choice(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'])
+    year = datetime.date.today().year + random.randint(0, 5)
+    return f'{month}/{year}'
+
 @app.route('/request_account', methods=['POST'])
 def request_account():
     # Handle the form submission
@@ -150,9 +159,11 @@ def request_card():
     if account:
         # Generate a new card number
         card_number = generate_card_number()
+        card_cvv = generate_cvv()
+        expiry_date = generate_expiry_date()
 
         # Create a new card
-        card = Card(firstName=firstName, lastName=lastName, number=card_number, iban=iban, user_id=user_id)
+        card = Card(firstName=firstName, lastName=lastName, number=card_number, iban=iban, user_id=user_id, cvv=card_cvv, expiry_date=expiry_date)
 
         # Add the card to the user's account
         db.users.update_one(
@@ -178,7 +189,6 @@ def display():
 
     return redirect(url_for('login'))
 
-
 @app.route('/transfer_money', methods=['POST'])
 def transfer_money():
     # Handle the form submission
@@ -200,5 +210,108 @@ def transfer_money():
 
     return jsonify({'message': 'Account created successfully'}), 200
 
+from flask import jsonify
+from bson.objectid import ObjectId
+
+@app.route('/get_currency', methods=['GET'])
+def get_currency():
+    iban = request.args.get('iban')
+    if not iban:
+        return jsonify({'error': 'Missing IBAN'}), 400
+
+    user_data = db.users.find_one({"accounts.iban": iban}, {"accounts.$": 1})
+
+    if user_data and 'accounts' in user_data and len(user_data['accounts']) > 0:
+        currency = user_data['accounts'][0].get('currency')
+        if currency:
+            return jsonify({'currency': currency})
+        else:
+            return jsonify({'error': 'Currency not found for given IBAN'}), 404
+    else:
+        return jsonify({'error': 'Account not found for given IBAN'}), 404
+
+def create_loan_request(user, amount, currency, status):
+    loan = Loan(user, amount, currency, status)
+    
+    loan.save_to_db()
+
+@app.route('/request_loan', methods=['POST'])
+def request_loan():
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Missing data'}), 400
+
+    user = session.get('user_id')
+    amount = data.get('amount')
+    currency = data.get('currency')
+    status = data.get('status')
+
+    if not user or not amount or not status or not currency:
+        return jsonify({'error': 'Missing user, amount, or status'}), 400
+
+    try:
+        create_loan_request(user, amount, currency, status)
+        return jsonify({'message': 'Loan request created'}), 201
+    except Exception as e:
+        print(f'Failed to create loan request: {e}')
+        return jsonify({'error': 'Failed to create loan request'}), 500    
+
+def get_loans():
+    try:
+        # Assuming you're using MongoDB and have a `loans` collection
+        loans = list(db.loans.find())
+        return loans
+    except Exception as e:
+        print(f'Failed to get loans: {e}')
+        return []
+
+@app.route('/loans', methods=['GET'])
+def loans():
+    if 'username' in session and session['username'] == 'bank':
+        user_id = session.get('user_id')
+
+        loans = get_loans()
+        return render_template('loans.html', username=session['username'], loans=loans, func=get_user_by_id)
+
+    return redirect(url_for('login'))
+
+@app.route('/history', methods=['GET'])
+def history():
+    if 'username' in session:
+        user_id = session.get('user_id')
+        user_data = db.users.find_one({"_id": user_id})
+
+        transactions = db.users.find_one({"_id": user_id})
+        print(transactions)
+
+        if user_data:
+            accounts = user_data.get('accounts', [])
+            return render_template('history.html', username=session['username'], transactions=transactions)
+        else:
+            return render_template('history.html', username=session['username'], transactions=[])
+
+    return redirect(url_for('login'))
+
+def get_user_by_id(user_id):
+    try:
+        user = db.users.find_one({"_id": user_id})
+        return user
+    except Exception as e:
+        print(f'Failed to get user: {e}')
+        return None
+
+def get_user_by_iban(iban):
+    try:
+        user = db.users.find_one({"iban": iban})
+        return user
+    except Exception as e:
+        print(f'Failed to get user: {e}')
+        return None        
+    
+@app.route('/exchange', methods=['GET'])
+def exchange():
+    if 'username' in session:
+        return render_template('exchange.html', username=session['username'])
+    return redirect(url_for('login'))
 
 app.run(debug=False, port=5000)

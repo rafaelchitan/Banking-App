@@ -89,12 +89,14 @@ class User:
     self.save_to_db()
   
 class Card:
-  def __init__(self, firstName, lastName, number, iban, user_id):
+  def __init__(self, firstName, lastName, number, iban, user_id, cvv, expiry_date):
       self.firstName = firstName
       self.lastName = lastName
       self.number = number
       self.iban = iban
       self.user_id = user_id
+      self.cvv = cvv
+      self.expiry_date = expiry_date
 
   def to_dict(self):
       return {
@@ -103,7 +105,9 @@ class Card:
           "lastName": self.lastName,
           "number": self.number,
           "iban": self.iban,
-          "user_id": self.user_id
+          "user_id": self.user_id,
+          "cvv": self.cvv,
+          "expiry_date": self.expiry_date
       } 
   
 class Transaction:
@@ -141,5 +145,26 @@ class Transaction:
 
     self.db.users.update_one({'_id': senderUser['_id']}, {'$push': {'transactions': self.to_dict()}})
     self.db.users.update_one({'_id': receiverUser['_id']}, {'$push': {'transactions': self.to_dict()}})
+
+class Loan:
+  def __init__(self, user, amount, currency, status):
+    self.user = user
+    self.amount = amount
+    self.currency = currency
+    self.status = status
+    self.client = MongoClient('mongodb://localhost:27017/')
+    self.db = self.client['bank']
+
+  def to_dict(self):
+      return {
+          "_id": uuid.uuid4().hex,
+          "user_id": self.user,
+          "amount": self.amount,
+          "currency": self.currency,
+          "status": self.status
+      }
+  
+  def save_to_db(self):
+    self.db.loans.insert_one(self.to_dict())
 
   

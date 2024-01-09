@@ -1,0 +1,15 @@
+body {
+    background-color: #16a085;
+  }
+  
+  h1, h5 {
+    color: blue;
+  }
+  
+  .row {
+      position: fixed;
+      height: 360px;
+      z-index: 15;
+      top: 50%;
+      margin-top: -180px;
+  }

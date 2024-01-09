@@ -1,0 +1,64 @@
+body {
+    margin-top: 20px;
+    background: #F0F8FF; /* Light Blue background */
+    font-family: Arial, sans-serif; /* Arial font */
+}
+
+.dark-mode body {
+    /* Dark mode styles */
+    background: #111; /* Dark background color */
+    color: #eee; /* Light text color */
+    /* ... (other styles for dark mode) */
+
+    /* Example additional styles for dark mode */
+    .container {
+        background-color: #222; /* Darker container background */
+    }
+
+    .table {
+        color: #eee; /* Table text color */
+        /* Additional table styles for dark mode */
+    }
+
+    #darkModeToggle {
+        background-color: #444; /* Darker button background */
+        color: #eee; /* Light text color for button */
+        /* Additional styles for dark mode toggle button */
+    }
+}
+
+.card {
+    box-shadow: 0 20px 27px 0 rgba(0, 0, 0, 0.05); /* Soft shadow */
+}
+
+.avatar.sm {
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: .818125rem;
+    /* Your custom styles for avatar */
+}
+
+.table-nowrap .table td,
+.table-nowrap .table th {
+    white-space: nowrap;
+    /* Keep table content in one line */
+}
+
+.table>:not(caption)>*>* {
+    padding: 0.75rem 1.25rem;
+    border-bottom-width: 1px;
+    /* Adjust table cell padding and border */
+}
+
+table th {
+    font-weight: 600;
+    background-color: #E6E6FA !important; /* Lavender background */
+}
+
+.fa-arrow-up {
+    color: #20B2AA; /* Light Sea Green arrow color */
+}
+
+.fa-arrow-down {
+    color: #FF69B4; /* Hot Pink arrow color */
+}

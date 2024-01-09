@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../static/css/history.css">
+  </head>
+
+  <body id="page-top">
+    {% extends 'template.html' %} {% block content %}
+    
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+<div class="container">
+    <div class="row">
+        <div class="col-12 mb-3 mb-lg-5">
+            <div class="position-relative card table-nowrap table-card">
+                <div class="card-header align-items-center">
+                    <h5 class="mb-0">Latest Transactions</h5>
+                    <p class="mb-0 small text-muted">1 Pending</p>
+                </div>
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead class="small text-uppercase bg-body text-muted">
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Date</th>
+                                <th>Name</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        {% for transaction in transactions %}
+                        <tr class="align-middle">
+                            <td>
+                                {{ transaction._id }}
+                            </td>
+                            <td>{{ transaction.sender }}</td>
+                            <td>{{ transaction.receiver }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <span><i class="fa fa-arrow-down" aria-hidden="true"></i></span>
+                                    <span>${{ transaction.amount }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge fs-6 fw-normal bg-tint-success text-success">{{ transaction.status }}</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="#!" class="btn btn-gray">View All Transactions</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<button id="darkModeToggle">Toggle Dark Mode</button>
+
+ <script>
+      // Function to toggle dark mode
+      function toggleDarkMode() {
+        const body = document.body;
+        body.classList.toggle("dark-mode");
+      }
+
+      // Add event listener to the darkModeToggle button
+      document.getElementById("darkModeToggle").addEventListener("click", toggleDarkMode);
+    </script>
+
+    {% endblock %}
+  </body>
+</html>
