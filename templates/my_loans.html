@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="../static/css/history.css" />
+  </head>
+
+  <body id="page-top">
+    {% extends 'template.html' %} {% block content %}
+
+    <link
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+    <div class="container">
+      <div class="row">
+        <div class="col-12 mb-3 mb-lg-5">
+          <div class="position-relative card table-nowrap table-card">
+            <div class="card-header align-items-center">
+              <h5 class="mb-0">Loan Requests</h5>
+            </div>
+            <div class="table-responsive">
+              <table class="table mb-0">
+                <thead class="small text-uppercase bg-body text-muted">
+                  <tr>
+                    <th>ID</th>
+                    <th>User ID</th>
+                    <th>Amount</th>
+                    <th>Currency</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                {% for loan_request in loan_requests %}
+                <tr class="align-middle">
+                  <td>{{ loan_request._id }}</td>
+                  <td>{{ username }}</td>
+                  <td>{{ loan_request.amount }}</td>
+                  <td>{{ loan_request.currency }}</td>
+                  <td>
+                    <span
+                      class="badge fs-6 fw-normal bg-tint-success text-success"
+                      >{{ loan_request.status }}</span
+                    >
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  </body>
+</html>

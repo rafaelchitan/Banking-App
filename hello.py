@@ -311,7 +311,10 @@ def get_user_by_iban(iban):
 @app.route('/exchange', methods=['GET'])
 def exchange():
     if 'username' in session:
-        return render_template('exchange.html', username=session['username'])
+        accounts = db.users.find_one({"_id": session['user_id']})['accounts']
+        if accounts:
+            return render_template('exchange.html', username=session['username'], accounts=accounts)
+        return render_template('exchange.html', username=session['username'], accounts=[])
     return redirect(url_for('login'))
 
 @app.route('/loan_approval', methods=['POST'])
@@ -350,5 +353,45 @@ def loan_approval():
     )
     return jsonify({'message': 'Loan modified successfully'}), 200
 
+@app.route('/my_loans', methods=['GET'])
+def my_loans():
+    user_id = session.get('user_id')
+    
+    if not user_id:
+        return jsonify({'error': 'Not logged in'}), 401
+    
+    user = db.users.find_one({'_id': user_id})
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    loan_requests = db.loans.find({'user_id': user_id})
+    
+    return render_template('my_loans.html', loan_requests=loan_requests, username=session['username'])
+
+from flask import request, jsonify
+
+@app.route('/delete_account', methods=['DELETE'])
+def delete_account():
+    user_id = session.get('user_id')
+    account_id = request.json.get('account_id')
+
+    if not user_id:
+        return jsonify({'error': 'Not logged in'}), 401
+
+    user_data = db.users.find_one({"_id": user_id})
+    if not user_data:
+        return jsonify({'error': 'User not found'}), 404
+
+    account = next((a for a in user_data['accounts'] if a['_id'] == account_id), None)
+    if not account:
+        return jsonify({'error': 'Account not found'}), 404
+
+    if account['balance'] != 0:
+        return jsonify({'error': 'Account balance is not zero'}), 400
+
+    user_data['accounts'].remove(account)
+    db.users.update_one({"_id": user_id}, {"$set": {"accounts": user_data['accounts']}})
+
+    return jsonify({'message': 'Account deleted successfully'}), 200
 
 app.run(debug=False, port=5000)

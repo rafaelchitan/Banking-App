@@ -43,6 +43,14 @@
               </div>
             </div>
             <br />
+            <button
+              type="button"
+              class="btn btn-primary btn-delete"
+              data-account-id="{{ account._id }}"
+              style="background-color:rgb(250, 69, 69); border-color: #e92b2b;"
+            >
+              Delete account
+            </button>
           </div>
         </div>
       </div>
@@ -94,7 +102,7 @@
                 />
               </div>
               <div class="form-group">
-                <label for="currenct">Currency</label>
+                <label for="currency">Currency</label>
                 <select class="form-control" id="currency">
                   <option>EUR</option>
                   <option>USD</option>
@@ -319,7 +327,16 @@
       </div>
     </div>
 
-    <button type="button" id="requestLoanButton">Request Loan</button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-toggle="modal"
+      id="requestLoanButton"
+    >
+    Request Loan
+    </button>
+
+    <!-- <button type="button" id="requestLoanButton">Request Loan</button> -->
 
     <div class="modal-dialog" role="document" id="loanModal">
         <div class="modal-content">
@@ -529,6 +546,26 @@
             .catch(function (error) {
               console.error("Failed to submit form:", error);
             });
+        });
+
+
+        $(document).ready(function() {
+          $('.btn-delete').click(function() {
+            var accountId = $(this).attr('id');
+              $.ajax({
+                  url: '/delete_account',
+                  type: 'DELETE',
+                  contentType: 'application/json',
+                  data: JSON.stringify({ account_id: accountId }),
+                  success: function(response) {
+                      alert(response.message);
+                      location.reload();
+                  },
+                  error: function(response) {
+                      alert(response.responseJSON.error);
+                  }
+              });
+          });
         });
     </script>
 

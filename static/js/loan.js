@@ -29,7 +29,7 @@ $('.friend-requests').on('click', '.friend-request', function() {
         .then(function (response) {
           if (response.ok) {
             // If the account was created successfully, hide the modal
-            var $rBtnrow = $(`.request-btn-row[data-username="${username}"]`);
+            var $rBtnrow = $(`.request-btn-row[data-loan-id="${loan_id}"]`);
 
             var message;
             if (type) {
@@ -58,7 +58,7 @@ function generateRandomCard(loan_name, loan_amount, loanID) {
     var unBox = makeHTMLElement('div', 'user-name-box', "@" + name + " requested a loan");
     var accept = makeHTMLElement('button', 'friend-request accept-request', 'Accept', {"data-username": name, "data-loan-id": loanID});
     var decline = makeHTMLElement('button', 'friend-request decline-request', 'Decline', {"data-username": name, "data-loan-id": loanID});
-    var rBtnrow = makeHTMLElement('div', 'request-btn-row', accept + decline, {"data-username": name});
+    var rBtnrow = makeHTMLElement('div', 'request-btn-row', accept + decline, {"data-loan-id": loanID});
     var friendBox = makeHTMLElement('div', 'friend-box', nameBox + unBox + rBtnrow);
     
     $('.friend-requests').append(friendBox);
