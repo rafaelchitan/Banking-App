@@ -373,24 +373,22 @@ from flask import request, jsonify
 @app.route('/delete_account', methods=['DELETE'])
 def delete_account():
     user_id = session.get('user_id')
-    account_id = request.json.get('account_id')
+    account_id = request.json.get('id')
 
     if not user_id:
         return jsonify({'error': 'Not logged in'}), 401
 
-    user_data = db.users.find_one({"_id": user_id})
-    if not user_data:
+    user = db.users.find_one({"_id": user_id})
+
+    if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    account = next((a for a in user_data['accounts'] if a['_id'] == account_id), None)
+    account = next((a for a in user['accounts'] if a.get('_id') == account_id), None)
     if not account:
         return jsonify({'error': 'Account not found'}), 404
 
-    if account['balance'] != 0:
-        return jsonify({'error': 'Account balance is not zero'}), 400
-
-    user_data['accounts'].remove(account)
-    db.users.update_one({"_id": user_id}, {"$set": {"accounts": user_data['accounts']}})
+    new_accounts = [account for account in user['accounts'] if account['_id'] != account_id]
+    db.users.update_one({"_id": user['_id']}, {"$set": {"accounts": new_accounts}})
 
     return jsonify({'message': 'Account deleted successfully'}), 200
 
