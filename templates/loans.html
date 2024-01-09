@@ -23,8 +23,11 @@
     {% if loan.status == "pending" %}
     
     <script>
-      generateRandomCard("{{ func(loan.user_id).first_name }} {{ func(loan.user_id).last_name }}", "{{ loan.amount }}");
-      </script>
+      function generate() {
+        generateRandomCard("{{ func(loan.user_id).first_name }} {{ func(loan.user_id).last_name }}", "{{ loan.amount }}", "{{ loan._id }}");
+      }
+      generate();
+    </script>
 
     {% endif %}
     {% endfor %}

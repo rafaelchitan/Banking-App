@@ -17,13 +17,15 @@ class User:
       user.accounts = data.get('accounts', [])
       return user
 
-  def add_account(self, alias, currency, iban):
+  def add_account(self, alias, currency, iban, balance):
     account = {
         'alias': alias,
         'currency': currency,
         'iban': iban,
         'balance': 0.0,
     }
+    if balance is not None:
+      account['balance'] = balance
     self.accounts.append(account)
     self.save_to_db()
     

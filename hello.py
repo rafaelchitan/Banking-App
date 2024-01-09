@@ -314,4 +314,40 @@ def exchange():
         return render_template('exchange.html', username=session['username'])
     return redirect(url_for('login'))
 
+@app.route('/loan_approval', methods=['POST'])
+def loan_approval():
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Missing data'}), 400
+    
+    loan_id = data.get('loan_id')
+    loan = db.loans.find_one({"_id": loan_id})
+    currency = loan.get('currency')
+    if not loan:
+        return jsonify({'error': 'Loan not found'}), 404
+    
+    user_id = loan.get('user_id')
+    user = get_user_from_database(user_id)
+    print(user)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    
+    amount = loan.get('amount')
+    status = data.get('approval')
+    if not status:
+        return jsonify({'error': 'Missing status'}), 400
+    
+    if status == 'accepted':
+        # Add the loan amount to the user's account
+        user.add_account('Loan account', currency, generate_iban(), amount)
+        
+
+    # Update the loan status
+    db.loans.update_one(
+        {"_id": loan_id},
+        {"$set": {"status": status}}
+    )
+    return jsonify({'message': 'Loan modified successfully'}), 200
+
+
 app.run(debug=False, port=5000)
