@@ -64,12 +64,13 @@ class User:
 
     # Check for existing email address
     if db.users.find_one({ "email": user['email'] }):
-      return jsonify({ "error": "Email address already in use" }), 400
+      return False
 
     if db.users.insert_one(user):
-      return self.start_session(user)
+      self.start_session(user)
+      return True
 
-    return jsonify({ "error": "Signup failed" }), 400
+    return False
   
   def signout(self):
     session.clear()
@@ -82,9 +83,10 @@ class User:
     })
 
     if user and pbkdf2_sha256.verify(request.form.get('password'), user['password']):
-      return self.start_session(user)
+      self.start_session(user)
+      return True
     
-    return jsonify({ "error": "Invalid login credentials" }), 401
+    return False
   
   def add_money(self, account, amount):
     account['balance'] += amount
@@ -141,7 +143,7 @@ class Transaction:
     senderAmount = [account['balance'] for account in senderUser['accounts'] if account['iban'] == self.sender]
     receiverAmount = [account['balance'] for account in receiverUser['accounts'] if account['iban'] == self.receiver]
     if senderAmount[0] < float(self.amount):
-      return jsonify({'message': 'Insufficient funds'}), 400
+      return 'Insufficient funds'
     
     senderAmount[0] = float(senderAmount[0]) - float(self.amount)
     receiverAmount[0] = float(receiverAmount[0]) + float(self.amount)

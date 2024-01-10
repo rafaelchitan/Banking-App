@@ -7,7 +7,7 @@ body, h1, h2, p, ul {
 body {
     font-family: 'Roboto', sans-serif; /* Use a modern font */
     background-color: #f0f0f0; /* Set a light background color */
-    color: #333;
+    color: rgb(13, 179, 209);
 }
 
 /* Container styling */
@@ -45,7 +45,7 @@ nav {
 
 .menu a {
     text-decoration: none;
-    color: #fff;
+    color: rgb(13, 179, 209);
     font-weight: bold;
     transition: color 0.3s ease-in-out;
 }

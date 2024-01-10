@@ -29,8 +29,10 @@ def accounts():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        return user.signup()  # Use the signup method of the User class
-
+        if user.signup() == True:
+            return redirect(url_for('home'))
+        else:
+            return render_template('register.html', error='Error creating account')
     return render_template('register.html')
 
 def get_user_from_database(user_id):
@@ -49,11 +51,11 @@ def login():
         password = request.form.get('password')
 
         # Authenticate the user. This will depend on how your User class is implemented.
-        user.login()
-        
-        return redirect(url_for('home'))
-
-    return render_template('login.html', error="Invalid username or password")
+        if user.login() == True:
+            return redirect(url_for('home'))
+        else:
+            return render_template('login.html', error='Invalid username/password combination')
+    return render_template('login.html')
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -62,7 +64,13 @@ def logout():
 @app.route('/', methods=['GET'])
 def home():
     if 'username' in session:
-        return render_template('home.html', username=session['username'])
+        return render_template('home.html', username=session['username'], 
+                               ron_balance=get_balance(get_user_by_id(session['user_id']), 'RON'), 
+                               eur_balance=get_balance(get_user_by_id(session['user_id']), 'EUR'),
+                               pending_number=pending_loans_count(get_user_by_id(session['user_id'])),
+                               active_number=active_loans_count(get_user_by_id(session['user_id'])),
+                               transactions=db.users.find_one({"_id": session['user_id']})['transactions'],
+                               loan_requests=db.loans.find({'user_id': session['user_id']}))
     return redirect(url_for('login'))
 
 @app.route('/buttons', methods=['GET'])
@@ -121,7 +129,7 @@ def request_account():
     user = get_user_from_database(user_id)
 
     # Add the new account to the user
-    user.add_account(alias, currency, iban)
+    user.add_account(alias, currency, iban, 0.0)
     print(user.accounts)
 
     return jsonify({'message': 'Account created successfully'}), 200
@@ -207,10 +215,8 @@ def transfer_money():
         return jsonify({'message': 'Not logged in'}), 401
     
     currency = db.users.find_one({"_id": user_id, "accounts.iban": senderIBAN}, {"accounts.$": 1})['accounts'][0]['currency']
-    print(currency)
     transaction = Transaction(senderIBAN, receiverIBAN, amount, description, currency)
     transaction.save_to_db()
-
     return jsonify({'message': 'Account created successfully'}), 200
 
 from flask import jsonify
@@ -247,7 +253,7 @@ def request_loan():
     user = session.get('user_id')
     amount = data.get('amount')
     currency = data.get('currency')
-    status = data.get('status')
+    status = 'pending'
 
     if not user or not amount or not status or not currency:
         return jsonify({'error': 'Missing user, amount, or status'}), 400
@@ -373,7 +379,7 @@ from flask import request, jsonify
 @app.route('/delete_account', methods=['DELETE'])
 def delete_account():
     user_id = session.get('user_id')
-    account_id = request.json.get('id')
+    account_iban = request.json.get('iban')
 
     if not user_id:
         return jsonify({'error': 'Not logged in'}), 401
@@ -383,13 +389,35 @@ def delete_account():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    account = next((a for a in user['accounts'] if a.get('_id') == account_id), None)
+    account = next((a for a in user['accounts'] if a.get('iban') == account_iban), None)
     if not account:
         return jsonify({'error': 'Account not found'}), 404
 
-    new_accounts = [account for account in user['accounts'] if account['_id'] != account_id]
+    new_accounts = [account for account in user['accounts'] if account['iban'] != account_iban]
     db.users.update_one({"_id": user['_id']}, {"$set": {"accounts": new_accounts}})
 
     return jsonify({'message': 'Account deleted successfully'}), 200
+
+def get_balance(user, currency):
+    balance = 0.0
+    accounts = user.get('accounts', [])
+    for account in accounts:
+        if account.get('currency') == currency:
+            balance += account.get('balance', 0.0)
+    return balance
+
+def pending_loans_count(user):
+    count = 0
+    loans = db.loans.find({'user_id': user['_id'], 'status': 'pending'})
+    for loan in loans:
+        count+=1
+    return count
+
+def active_loans_count(user):
+    count = 0
+    loans = db.loans.find({'user_id': user['_id'], 'status': 'accepted'})
+    for loan in loans:
+        count+=1
+    return count
 
 app.run(debug=False, port=5000)

@@ -49,13 +49,12 @@ $('.friend-requests').on('click', '.friend-request', function() {
 });
 
 
-function generateRandomCard(loan_name, loan_amount, loanID) {
+function generateRandomCard(loan_name, loan_amount, loanID, currency) {
     var name = loan_name;
     var amount = loan_amount;
     
     var nameBox = makeHTMLElement("div", 'name-box', name);
-    var amountBox = makeHTMLElement('div', 'amount-box', amount);
-    var unBox = makeHTMLElement('div', 'user-name-box', "@" + name + " requested a loan");
+    var unBox = makeHTMLElement('div', 'user-name-box', "@" + name + " requested a loan of " + amount + " " + currency);
     var accept = makeHTMLElement('button', 'friend-request accept-request', 'Accept', {"data-username": name, "data-loan-id": loanID});
     var decline = makeHTMLElement('button', 'friend-request decline-request', 'Decline', {"data-username": name, "data-loan-id": loanID});
     var rBtnrow = makeHTMLElement('div', 'request-btn-row', accept + decline, {"data-loan-id": loanID});

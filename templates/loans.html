@@ -24,7 +24,7 @@
     
     <script>
       function generate() {
-        generateRandomCard("{{ func(loan.user_id).first_name }} {{ func(loan.user_id).last_name }}", "{{ loan.amount }}", "{{ loan._id }}");
+        generateRandomCard("{{ func(loan.user_id).first_name }} {{ func(loan.user_id).last_name }}", "{{ loan.amount }}", "{{ loan._id }}", "{{ loan.currency }}");
       }
       generate();
     </script>

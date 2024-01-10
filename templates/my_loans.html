@@ -23,8 +23,6 @@
               <table class="table mb-0">
                 <thead class="small text-uppercase bg-body text-muted">
                   <tr>
-                    <th>ID</th>
-                    <th>User ID</th>
                     <th>Amount</th>
                     <th>Currency</th>
                     <th>Status</th>
@@ -32,16 +30,25 @@
                 </thead>
                 {% for loan_request in loan_requests %}
                 <tr class="align-middle">
-                  <td>{{ loan_request._id }}</td>
-                  <td>{{ username }}</td>
                   <td>{{ loan_request.amount }}</td>
                   <td>{{ loan_request.currency }}</td>
                   <td>
+                    {% if loan_request.status == 'pending' %}
                     <span
-                      class="badge fs-6 fw-normal bg-tint-success text-success"
+                      class="badge fs-6 fw-normal bg-tint-primary text-primary"
                       >{{ loan_request.status }}</span
                     >
-                  </td>
+                    {% elif loan_request.status == 'declined' %}
+                    <span
+                      class="badge fs-6 fw-normal bg-tint-danger text-danger"
+                      >{{ loan_request.status }}</span
+                      >
+                      {% else %}
+                      <span
+                        class="badge fs-6 fw-normal bg-tint-success text-success"
+                        >{{ loan_request.status }}</span
+                        >
+                        {% endif %}
                 </tr>
                 {% endfor %}
               </table>

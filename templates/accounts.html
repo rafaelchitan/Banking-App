@@ -5,13 +5,6 @@
 <body id="page-top">
   {% extends 'template.html' %} {% block content %}
 
-  <!-- Page Heading -->
-  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-        class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
-  </div>
-
   <!-- Content Row -->
   <div class="row">
     {% for account in accounts %}
@@ -37,8 +30,6 @@
             </div>
           </div>
           <br />
-          <button type="button" class="btn btn-danger delete-account" id="deleteButton"
-            data-account-id="{{ account._id }}">Delete Account</button>
         </div>
       </div>
     </div>
@@ -66,7 +57,7 @@
           <form name="newAccountForm" id="newAccountForm">
             <div class="form-group">
               <label for="alias">Alias</label>
-              <input type="text" class="form-control" id="aliasInput"
+              <input type="text" class="form-control" id="alias"
                 placeholder="Enter a alias for your new bank account" />
             </div>
             <div class="form-group">
@@ -77,39 +68,6 @@
                 <option>GBP</option>
                 <option>RON</option>
               </select>
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                Cancel
-              </button>
-              <button type="submit" class="btn btn-primary">
-                Create account
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="addMoneyModal" tabindex="-1" role="dialog" aria-labelledby="addMoneyModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addMoneyModalLabel">
-            Add Money to account
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form name="newAccountForm" id="newAccountForm">
-            <div class="form-group">
-              <label for="alias">Account Alias</label>
-              <input type="text" class="form-control" id="alias" disabled placeholder="RO" />
             </div>
 
             <div class="modal-footer">
@@ -179,31 +137,43 @@
     </div>
   </div>
 
-  <div class="modal fade" id="addMoneyModal" tabindex="-1" role="dialog" aria-labelledby="addMoneyModalLabel"
+  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#requestLoanModal" id="requestLoanButton">
+    Request Loan
+  </button>
+
+  <div class="modal fade" id="requestLoanModal" tabindex="-1" role="dialog" aria-labelledby="requestLoanLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addMoneyModalLabel">
-            Add Money to account
+          <h5 class="modal-title" id="requestLoanModalLabel">
+            Request a new loan
           </h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <form name="newAccountForm" id="newAccountForm">
+          <form name="requestLoanForm" id="requestLoanForm">
             <div class="form-group">
-              <label for="alias">Account Alias</label>
-              <input type="text" class="form-control" id="alias" disabled placeholder="RO" />
+              <label for="loanAmount">Amount Requested</label>
+              <input type="number" step="0.01" class="form-control" id="loanAmount" placeholder="Enter the amount of money" />
             </div>
-
+            <div class="form-group">
+              <label for="loanCurrency">Currency</label>
+              <select class="form-control" id="loanCurrency">
+                <option>EUR</option>
+                <option>USD</option>
+                <option>GBP</option>
+                <option>RON</option>
+              </select>
+            </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">
                 Cancel
               </button>
               <button type="submit" class="btn btn-primary">
-                Create account
+                Request Loan
               </button>
             </div>
           </form>
@@ -212,50 +182,47 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-primary" data-toggle="modal" id="requestLoanButton">
-    Request Loan
-  </button>
-
-  <!-- <button type="button" id="requestLoanButton">Request Loan</button> -->
-
-  <div class="modal-dialog" role="document" id="loanModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="requestLoanLabel">
-          Request loan
-        </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form name="loanForm" id="loanForm">
-          <div class="form-group">
-            <label for="amount">Amount</label>
-            <input type="text" class="form-control" placeholder="0" id="amountInput" />
-          </div>
-
-          <div class="form-group">
-            <label for="currency">Currency</label>
-            <input type="text" class="form-control" placeholder="EUR" id="currencyInput" />
-          </div>
-
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" id="closeLoanModalButton">
-              Cancel
-            </button>
-            <button type="submit" class="btn btn-primary" id="requestLoanSubmit">
-              Request loan
-            </button>
-          </div>
-        </form>
+  <button type="button" class="btn btn-danger delete-account" id="deleteButton" data-toggle="modal" data-target="#deleteAccountModal">Delete an account</button>
+  
+  <div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="deleteAccountLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteAccountModalLabel">
+            Choose an account to delete
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form name="deleteAccountForm" id="deleteAccountForm">
+            <div class="form-group">
+              <select class="form-control" id="accountToDelete">
+                {% for account in accounts %}
+                  {% if account.balance == 0 %}
+                    <option>{{ account.iban }}</option>
+                  {% endif %}
+                {% endfor %}
+                </select>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary btn-danger">
+                Delete Account
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-  </div>
-
+ 
   <script>
-    document.getElementById("loanModal").style.display = "none";
+    document.getElementById("newAccountModal").style.display = "none";
 
     document
       .getElementById("newAccountForm")
@@ -363,25 +330,20 @@
           });
       });
 
-    document
-      .getElementById("requestLoanButton")
-      .addEventListener("click", function () {
-        document.getElementById("loanModal").style.display = "block";
-      });
-
-    document
-      .getElementById("closeLoanModalButton")
-      .addEventListener("click", function () {
-        document.getElementById("loanModal").style.display = "none";
-      });
-
-    document
-      .getElementById("requestLoanSubmit")
-      .addEventListener("click", function () {
+      document
+      .getElementById("requestLoanForm")
+      .addEventListener("submit", function (event) {
         event.preventDefault();
 
-        var currencyInput = document.getElementById("currencyInput").value;
-        var amountInput = document.getElementById("amountInput").value;
+        var currency = document.getElementById("loanCurrency").value;
+        var amount = document.getElementById("loanAmount").value;
+
+        console.log(
+          "Submitting loan form with amount:",
+          amount,
+          "and currency:",
+          currency
+        );
 
         fetch("/request_loan", {
           method: "POST",
@@ -389,16 +351,14 @@
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            amount: amountInput,
-            currency: currencyInput,
-            status: "pending"
+            currency: currency,
+            amount: amount
           }),
         })
           .then(function (response) {
             if (response.ok) {
-              // If the loan was requested successfully, hide the modal
-              document.getElementById("loanModal").style.display = "none";
-              console.log("Loan requested successfully");
+              // If the account was created successfully, hide the modal
+              $("#requestLoanModal").modal("hide");
             } else {
               console.error("Failed to request loan:", response.statusText);
             }
@@ -408,29 +368,37 @@
           });
       });
 
+      document
+      .getElementById("deleteAccountForm")
+      .addEventListener("submit", function (event) {
+        event.preventDefault();
+        
+        var iban = document.getElementById("accountToDelete").value;
 
-    document.getElementById('deleteButton').addEventListener('click', function () {
-      var accountId = this.getAttribute('data-account-id');
-      console.log("accountId: ", accountId);
-
-      fetch('/delete_account', {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ id: accountId }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Success:', data);
-          location.reload();
+        fetch("/delete_account", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            iban: iban
+          }),
         })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-    });
+          .then(function (response) {
+            if (response.ok) {
+              // If the account was created successfully, hide the modal
+              $("#deleteAccountModal").modal("hide");
+            } else {
+              console.error("Failed to request loan:", response.statusText);
+            }
+          })
+          .catch(function (error) {
+            console.error("Failed to submit form:", error);
+          });
+      });
     
   </script>
+
 
   {% endblock %}
 </body>

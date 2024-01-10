@@ -24,7 +24,6 @@
                                 <th>Sender account</th>
                                 <th>Receiver account</th>
                                 <th>Amount</th>
-                                <th>Status</th>
                             </tr>
                         </thead>
                         {% for transaction in transactions %}
@@ -36,12 +35,9 @@
                             <td>{{ transaction.receiver }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <span><i class="fa fa-arrow-up" aria-hidden="true"></i></span>
+                                    <span><i class="fa" aria-hidden="true"></i></span>
                                     <span>{{ transaction.currency }} {{ transaction.amount }}</span>
                                 </div>
-                            </td>
-                            <td>
-                                <span class="badge fs-6 fw-normal bg-tint-success text-success">{{ transaction.status }}</span>
                             </td>
                         </tr>
                     {% endfor %}

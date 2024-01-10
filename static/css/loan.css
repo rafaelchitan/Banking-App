@@ -119,18 +119,18 @@
   cursor: pointer;
 }
 .friend-requests .request-btn-row .decline-request {
-  background-color: #FF6666;
+  background-color: #e90808;
   color: #fff;
 }
 .friend-requests .request-btn-row .decline-request:hover {
   background-color: #993333;
 }
 .friend-requests .request-btn-row .accept-request {
-  background-color: #41c764;
+  background-color: #0a16a2;
   color: #fff;
 }
 .friend-requests .request-btn-row .accept-request:hover {
-  background-color: #419764;
+  background-color: #2d16de;
 }
 .friend-requests .request-btn-row .fr-request-pending {
   position: relative;
